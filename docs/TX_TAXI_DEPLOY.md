@@ -251,3 +251,27 @@ hydration/page/resource errors or document overflow are verified in
 `/tmp/tx-taxi-eth-entity-ssr-time-fixed.json`. Recent-block mobile and transaction
 desktop screenshots were visually reviewed. Deployed-image verification remains
 required before assigning a public domain.
+
+## Private Image Verification: 408882a
+
+Coolify job `jjm3q6shu6xvckxn0fmtdroh` finished successfully at pinned source
+`408882a789f364a7c1786990585242e15d85bf78`. The running container is
+`fr5ydadyrvhakbg79vytbrbo-060837377371`, image
+`sha256:192e607fbf3a3933d42c792d8f4b9a97faf27c491b33ebad9789a613cff6760f`.
+It is healthy with zero restarts, no domain and no published host port.
+Autodeploy remains disabled. Previous image
+`sha256:2de2c4aba419a7efe9eeb84ce0fa81f43feda075beeb3c316f533da427d89df6`
+is retained for rollback.
+
+The stricter smoke probe captures every console error, HTTP failure and
+non-cancelled network failure. All 12 checks pass against this exact image:
+`/tmp/tx-taxi-eth-entity-ssr-408882a.json`. Its recent-block mobile and transaction
+desktop screenshots were visually reviewed. The GraphiQL regression also passes
+with a real query, four same-origin workers, no captured console/page/request
+errors and no overflow: `/tmp/tx-taxi-eth-graphiql-408882a.json`.
+
+The probes used temporary local port 14004. After verification, the existing SSH
+tunnel at `http://127.0.0.1:14002` was moved to the new container's bridge address
+`172.18.0.34:3000`; `/block/46147` returns 200 through it. Port 14004 was removed.
+No public route was changed. Entity metadata, remaining entity SSR, provider
+fault-injection coverage and final security/cutover gates remain open.

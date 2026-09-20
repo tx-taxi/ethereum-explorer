@@ -40,9 +40,13 @@ const cases = [
         page.on('response', response => {
           if (response.status() >= 400) failedResources.push({ url: response.url(), status: response.status() });
         });
+        page.on('requestfailed', request => {
+          const error = request.failure()?.errorText;
+          if (error !== 'net::ERR_ABORTED') failedResources.push({ url: request.url(), error });
+        });
         page.on('pageerror', error => errors.push(error.message));
         page.on('console', message => {
-          if (message.type() === 'error' && /hydration|React error|server rendered/i.test(message.text())) errors.push(message.text());
+          if (message.type() === 'error') errors.push(message.text());
         });
         const response = await page.goto(origin + item.path, { waitUntil: 'domcontentloaded' });
         await page.getByRole('tab', { name: 'Details', exact: true }).waitFor({ timeout: 30000 });
