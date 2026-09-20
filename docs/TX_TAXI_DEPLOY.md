@@ -309,3 +309,17 @@ Private staging remains pinned to `408882a`; no deployment or public routing
 change was made for this follow-up. Entity-specific bitmap previews, remaining
 entity SSR, client-enriched metadata synchronization, remaining canonical
 routes, error-page branding and final security/cutover checks are still required.
+
+### Client-Enriched Social Tags (Source Only)
+
+Client metadata enrichment now updates existing Open Graph and Twitter titles,
+descriptions and image tags together with the document title/description. It
+does not create unmanaged head elements or overwrite Next.js-owned canonical
+aliases and social URLs. Existing Product-schema creation/update/removal is
+preserved. Four DOM regressions use actual generated metadata and rendered head
+markup, including repeated enrichment, missing tags and obsolete schema cleanup.
+The combined metadata/SSR suite passes 47 tests; TypeScript and targeted ESLint
+pass. This follow-up has not been rebuilt into an image or browser-tested in the
+candidate. Private staging remains `408882a`; public routing is unchanged.
+Entity-specific images, remaining entity SSR/canonicals, runtime error branding
+and the wider security/parity/cutover gates remain open.

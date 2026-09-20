@@ -8,10 +8,25 @@ import generate from './generate';
 const JSON_LD_SCRIPT_ID = 'blockscout-product-schema';
 
 export default function update<Pathname extends Route['pathname']>(route: RouteParams<Pathname>, apiData: ApiData<Pathname>) {
-  const { title, description, jsonLd } = generate(route, apiData);
+  const { title, description, opengraph, jsonLd } = generate(route, apiData);
 
   window.document.title = title;
   window.document.querySelector('meta[name="description"]')?.setAttribute('content', description);
+
+  // Enrich the existing Next.js-owned tags without replacing route-level canonical URLs.
+  const socialTags = [
+    [ 'meta[property="og:title"]', opengraph.title ],
+    [ 'meta[name="twitter:title"]', opengraph.title ],
+    [ 'meta[property="og:description"]', opengraph.description ],
+    [ 'meta[name="twitter:description"]', opengraph.description ],
+    [ 'meta[property="og:image"]', opengraph.imageUrl ],
+    [ 'meta[name="twitter:image"]', opengraph.imageUrl ],
+  ];
+  socialTags.forEach(([ selector, content ]) => {
+    if (selector && content !== undefined) {
+      window.document.querySelector(selector)?.setAttribute('content', content);
+    }
+  });
 
   // Update or create JSON-LD script tag for Product schema
   if (jsonLd) {
