@@ -7,6 +7,12 @@ const prefix = process.env.REPORT_PREFIX || '/tmp/tx-taxi-eth-entity-ssr';
 const hash = '0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060';
 const cases = [
   { name: 'block', path: '/block/46147', text: 'Block #46147', detail: 'Gas limit' },
+  {
+    name: 'block-hash',
+    path: '/block/0x4e3a3754410177e6937ef1f84bba68ea139e8d1a2258c5f85db9f1cd715a1bdd',
+    text: 'Block #46147',
+    detail: 'Gas limit',
+  },
   { name: 'tx', path: `/tx/${hash}`, text: hash, detail: 'Transaction fee' },
 ];
 
@@ -29,6 +35,13 @@ const cases = [
       await page.screenshot({ path: `${prefix}-${item.name}-no-js.png` });
       assert.equal(result.status, 200);
       assert.ok(result.entity && result.detail, `Missing server-rendered ${item.name} details: ${text.slice(0, 400)}`);
+      if (item.name === 'block' || item.name === 'block-hash') {
+        await page.getByRole('link', { name: 'next', exact: true }).click();
+        await page.getByRole('heading', { name: 'Block #46148', exact: true }).waitFor({ timeout: 15000 });
+        await page.getByRole('link', { name: 'prev', exact: true }).click();
+        await page.getByRole('heading', { name: 'Block #46147', exact: true }).waitFor({ timeout: 15000 });
+        result.navigation = true;
+      }
       await context.close();
     }
     for (const width of [1440, 390]) {
@@ -67,10 +80,10 @@ const cases = [
         assert.equal(overflow, 0);
         assert.deepEqual(errors, []);
         assert.deepEqual(failedResources, []);
-        if (item.name === 'block') {
-          await page.getByRole('button', { name: 'next', exact: true }).click();
+        if (item.name === 'block' || item.name === 'block-hash') {
+          await page.getByRole('link', { name: 'next', exact: true }).click();
           await page.getByRole('heading', { name: 'Block #46148', exact: true }).waitFor({ timeout: 15000 });
-          await page.getByRole('button', { name: 'prev', exact: true }).click();
+          await page.getByRole('link', { name: 'prev', exact: true }).click();
           await page.getByRole('heading', { name: 'Block #46147', exact: true }).waitFor({ timeout: 15000 });
           result.navigation = true;
           assert.deepEqual(errors, []);

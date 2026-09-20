@@ -2,13 +2,16 @@ import { Box, chakra, Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import { IconButton } from 'toolkit/chakra/icon-button';
+import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import { Tooltip } from 'toolkit/chakra/tooltip';
 import IconSvg from 'ui/shared/IconSvg';
 
 interface Props {
   className?: string;
-  onClick: (direction: 'prev' | 'next') => void;
+  onClick?: (direction: 'prev' | 'next') => void;
+  prevHref?: string;
+  nextHref?: string;
   prevLabel?: string;
   nextLabel?: string;
   isPrevDisabled?: boolean;
@@ -16,13 +19,13 @@ interface Props {
   isLoading?: boolean;
 }
 
-const PrevNext = ({ className, onClick, prevLabel, nextLabel, isPrevDisabled, isNextDisabled, isLoading }: Props) => {
+const PrevNext = ({ className, onClick, prevHref, nextHref, prevLabel, nextLabel, isPrevDisabled, isNextDisabled, isLoading }: Props) => {
   const handelPrevClick = React.useCallback(() => {
-    onClick('prev');
+    onClick?.('prev');
   }, [ onClick ]);
 
   const handelNextClick = React.useCallback(() => {
-    onClick('next');
+    onClick?.('next');
   }, [ onClick ]);
 
   if (isLoading) {
@@ -44,8 +47,11 @@ const PrevNext = ({ className, onClick, prevLabel, nextLabel, isPrevDisabled, is
           boxSize={ 6 }
           onClick={ handelPrevClick }
           disabled={ isPrevDisabled }
+          asChild={ Boolean(prevHref && !isPrevDisabled) }
         >
-          <IconSvg name="arrows/east-mini"/>
+          { prevHref && !isPrevDisabled ? (
+            <Link href={ prevHref }><IconSvg name="arrows/east-mini"/></Link>
+          ) : <IconSvg name="arrows/east-mini"/> }
         </IconButton>
       </Tooltip>
       <Tooltip content={ nextLabel }>
@@ -57,8 +63,11 @@ const PrevNext = ({ className, onClick, prevLabel, nextLabel, isPrevDisabled, is
           ml="10px"
           onClick={ handelNextClick }
           disabled={ isNextDisabled }
+          asChild={ Boolean(nextHref && !isNextDisabled) }
         >
-          <IconSvg name="arrows/east-mini" transform="rotate(180deg)"/>
+          { nextHref && !isNextDisabled ? (
+            <Link href={ nextHref }><IconSvg name="arrows/east-mini" transform="rotate(180deg)"/></Link>
+          ) : <IconSvg name="arrows/east-mini" transform="rotate(180deg)"/> }
         </IconButton>
       </Tooltip>
     </Box>

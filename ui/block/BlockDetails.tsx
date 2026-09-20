@@ -6,7 +6,7 @@ import React from 'react';
 
 import { ZKSYNC_L2_TX_BATCH_STATUSES } from 'types/api/zkSyncL2';
 
-import { route, routeParams } from 'nextjs/routes';
+import { route } from 'nextjs/routes';
 
 import config from 'configs/app';
 import getBlockReward from 'lib/block/getBlockReward';
@@ -61,17 +61,6 @@ const BlockDetails = ({ query }: Props) => {
   const multichainContext = useMultichainContext();
 
   const { data, isPlaceholderData } = query;
-
-  const handlePrevNextClick = React.useCallback((direction: 'prev' | 'next') => {
-    if (!data) {
-      return;
-    }
-
-    const increment = direction === 'next' ? +1 : -1;
-    const nextId = String(data.height + increment);
-
-    router.push(routeParams({ pathname: '/block/[height_or_hash]', query: { height_or_hash: nextId } }, { chain: multichainContext?.chain }));
-  }, [ data, multichainContext, router ]);
 
   if (!data) {
     return null;
@@ -166,7 +155,9 @@ const BlockDetails = ({ query }: Props) => {
         { data.height === 0 && <Text whiteSpace="pre"> - Genesis Block</Text> }
         <PrevNext
           ml={ 6 }
-          onClick={ handlePrevNextClick }
+          prevHref={ data.height > 0 ?
+            route({ pathname: '/block/[height_or_hash]', query: { height_or_hash: String(data.height - 1) } }, multichainContext) : undefined }
+          nextHref={ route({ pathname: '/block/[height_or_hash]', query: { height_or_hash: String(data.height + 1) } }, multichainContext) }
           prevLabel="View previous block"
           nextLabel="View next block"
           isPrevDisabled={ data.height === 0 }

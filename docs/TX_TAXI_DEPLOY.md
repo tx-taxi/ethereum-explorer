@@ -363,3 +363,35 @@ also works without JavaScript. Original failed reports remain at
 Entity-specific bitmap previews, remaining entity SSR/canonicals, runtime error
 branding, pre-hydration navigation, exact-image security review and the broader
 parity/source-release/public-cutover gates remain open.
+
+## Native Block Navigation Follow-up (Source Only)
+
+Block previous/next arrows now use the existing toolkit Link, rendering native
+anchors with route-derived destinations instead of relying on an imperative
+router click. They work before hydration and with JavaScript disabled. The
+shared PrevNext component accepts optional destinations while preserving its
+existing action-button callers, loading placeholders and disabled buttons.
+Genesis has no previous link. Multichain route context is retained, and the
+toolkit's disabled prefetch default avoids speculative provider requests.
+
+Four rendered-component regressions, the combined 51-test suite, targeted lint,
+TypeScript and a complete production build pass. The expanded SSR probe passes
+15 checks against the local production build, including real block height/hash
+next/previous navigation without JavaScript and at 1440px/Phoenix and
+390px/Tokyo. No console/page/HTTP/network errors or overflow were captured.
+An additional no-JS genesis check confirms the disabled previous button and
+`/block/1` next link. Desktop/mobile screenshots were visually reviewed.
+Evidence: `/tmp/tx-taxi-eth-native-links-production.json` and its screenshots.
+Metadata/PNG/hydrated navigation also pass:
+`/tmp/tx-taxi-eth-native-links-metadata.json`.
+
+Earlier development-server checks are retained as failed evidence: the first
+used production CSP, blocking Next.js development eval; the corrected dev run
+stopped on development-mode style/input/web3-query console warnings. No warnings
+were filtered out to make the production check pass, and production CSP was not
+relaxed. The local validation servers have been stopped.
+
+This fixes the early-click defect in source, not in the staged image. Private
+staging remains `30378e2`; rebuild and exact-image regression are required.
+Public routing remains unchanged. Other entity SSR/canonical, social-image,
+runtime branding, security, source-release and full parity/cutover gates remain.

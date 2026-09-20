@@ -53,8 +53,8 @@ const transaction = '0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba
     await page.goto(origin + `/block/${block.hash}`, { waitUntil: 'domcontentloaded' });
     // This probe checks client navigation; pre-hydration button behavior is a separate UX gate.
     await page.waitForFunction(() => window.next?.router?.isReady, undefined, { timeout: 30000 });
-    await page.getByRole('button', { name: 'next', exact: true }).waitFor({ timeout: 30000 });
-    await page.getByRole('button', { name: 'next', exact: true }).click();
+    await page.getByRole('link', { name: 'next', exact: true }).waitFor({ timeout: 30000 });
+    await page.getByRole('link', { name: 'next', exact: true }).click();
     await page.waitForFunction(() => document.title.includes('46148'), undefined, { timeout: 15000 });
     const navigation = await page.evaluate(() => ({
       title: document.title,
