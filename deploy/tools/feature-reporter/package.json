@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "tsc": "^2.0.4",
-    "tsc-alias": "^1.8.7",
+    "tsc-alias": "^1.9.5",
     "typescript": "5.1",
-    "webpack": "^5.88.2",
+    "webpack": "^5.111.1",
     "webpack-cli": "^5.1.4"
   },
   "devDependencies": {
     "dotenv-cli": "^7.2.1"
+  },
+  "resolutions": {
+    "picomatch": "2.3.2"
   }
 }

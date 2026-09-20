@@ -17,5 +17,8 @@
     "dotenv-cli": "10.0.0",
     "typescript": "5.4.2",
     "vite": "6.4.1"
+  },
+  "resolutions": {
+    "ws": "8.21.3"
   }
 }

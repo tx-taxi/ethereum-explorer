@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">tx.taxi</title>
+  <rect width="64" height="64" rx="8" fill="#F2B72E"/>
+  <path fill="#17191C" d="M13 15h38v10H13zm10 10h18v24H23z"/>
+  <path fill="#17191C" d="m41 27 11 22H40l-8-14z"/>
+</svg>

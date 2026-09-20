@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="116" height="24" viewBox="0 0 116 24" role="img" aria-labelledby="title">
+  <title id="title">tx.taxi</title>
+  <g fill="none" fill-rule="evenodd">
+    <path fill="#E9A820" d="M2 4h18v16H2z"/>
+    <path fill="#17191C" d="M5 7h12v3H5zm3 3h6v7H8z"/>
+    <path fill="#17191C" d="m15 11 3 6h-4l-2-4z"/>
+    <text x="26" y="17" fill="#17191C" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="0">tx.taxi</text>
+  </g>
+</svg>
