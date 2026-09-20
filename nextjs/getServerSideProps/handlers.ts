@@ -15,6 +15,7 @@ const adBannerFeature = config.features.adsBanner;
 
 export interface Props<Pathname extends Route['pathname'] = never> {
   query: Route['query'];
+  metadataQuery?: Route['query'];
   cookies: string;
   referrer: string;
   adBannerProvider: AdBannerProviders | null;

@@ -43,6 +43,25 @@ it('preserves feature-guard results without entity fetching', async() => {
   expect(fetcher).not.toHaveBeenCalled();
 });
 
+it('uses the validated block height for metadata without changing the routing query', async() => {
+  const query = { height_or_hash: HASH, tab: 'txs' };
+  baseline.mockResolvedValue({ props: { ...props, query } });
+  vi.stubGlobal('fetch', vi.fn(async() => new Response(JSON.stringify({ hash: HASH, height: 1, type: 'block' }))));
+  const { blockEntity } = await import('./entity');
+  expect(await blockEntity(context({ height_or_hash: HASH }))).toMatchObject({ props: {
+    query,
+    metadataQuery: { height_or_hash: '1', tab: 'txs' },
+  } });
+});
+
+it.each([ 'reorg', 'uncle', undefined ])('preserves hash-based metadata for block type %s', async(type) => {
+  vi.stubGlobal('fetch', vi.fn(async() => new Response(JSON.stringify({ hash: HASH, height: 1, type }))));
+  const { blockEntity } = await import('./entity');
+  expect(await blockEntity(context({ height_or_hash: HASH }))).toMatchObject({ props: {
+    metadataQuery: { height_or_hash: HASH },
+  } });
+});
+
 it('isolates request query state and uses the transaction resource key', async() => {
   const hashes = [ HASH, '0x' + 'b'.repeat(64) ];
   vi.stubGlobal('fetch', vi.fn<typeof fetch>(async(url) => new Response(JSON.stringify({ hash: String(url).split('/').pop() }))));

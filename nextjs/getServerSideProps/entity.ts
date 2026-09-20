@@ -30,7 +30,15 @@ function entity(kind: EntityKind): (context: GetServerSidePropsContext) => Promi
       client.setQueryData(key, result.data);
       const entityQuery = dehydrate(client);
       client.clear();
-      return { props: { ...props, entityQuery, entityRenderedAt: Date.now() } };
+      return { props: {
+        ...props,
+        entityQuery,
+        entityRenderedAt: Date.now(),
+        ...(kind === 'block' ? { metadataQuery: {
+          ...props.query,
+          height_or_hash: result.data.type === 'block' ? String(result.data.height) : String(result.data.hash).toLowerCase(),
+        } } : {}),
+      } };
     }
     context.res.setHeader('X-Robots-Tag', 'noindex');
     context.res.setHeader('Cache-Control', 'no-store');

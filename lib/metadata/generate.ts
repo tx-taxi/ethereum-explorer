@@ -10,7 +10,6 @@ import { currencyUnits } from 'lib/units';
 import compileValue from './compileValue';
 import generateProductSchema from './generateProductSchema';
 import getCanonicalUrl from './getCanonicalUrl';
-import getPageOgType from './getPageOgType';
 import * as templates from './templates';
 
 export default function generate<Pathname extends Route['pathname']>(route: RouteParams<Pathname>, apiData: ApiData<Pathname> = null): Metadata {
@@ -29,18 +28,19 @@ export default function generate<Pathname extends Route['pathname']>(route: Rout
   const title = compileValue(templates.title.make(route.pathname, Boolean(apiData)), params);
   const description = compileValue(templates.description.make(route.pathname, Boolean(apiData)), params);
 
-  const pageOgType = getPageOgType(route.pathname);
   const jsonLd = generateProductSchema(route, apiData);
+  const canonical = getCanonicalUrl(route.pathname, route.query);
 
   return {
     title: title,
     description,
     opengraph: {
       title: title,
-      description: pageOgType !== 'Regular page' ? config.meta.og.description : '',
-      imageUrl: pageOgType !== 'Regular page' ? config.meta.og.imageUrl : '',
+      description: description || config.meta.og.description,
+      imageUrl: config.app.host ? config.meta.og.imageUrl : undefined,
+      url: canonical,
     },
-    canonical: getCanonicalUrl(route.pathname),
+    canonical,
     jsonLd,
   };
 }

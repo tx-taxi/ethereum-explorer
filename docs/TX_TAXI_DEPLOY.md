@@ -275,3 +275,37 @@ tunnel at `http://127.0.0.1:14002` was moved to the new container's bridge addre
 `172.18.0.34:3000`; `/block/46147` returns 200 through it. Port 14004 was removed.
 No public route was changed. Entity metadata, remaining entity SSR, provider
 fault-injection coverage and final security/cutover gates remain open.
+
+## Canonical and Social Metadata Follow-up (Source Only)
+
+Metadata now emits validated canonical URLs for block, transaction, address,
+token and uint256 NFT-instance routes, plus the main public lists. Tab/tracking
+parameters are excluded and hex identifiers are normalized. Canonical blocks
+looked up by hash use the validated height for metadata without changing the UI's
+routing query. Reorged/uncle blocks and unknown block types retain hash identity.
+Default HTTP/HTTPS ports are normalized at the configured application origin.
+
+Open Graph URLs match the canonical, and social descriptions match the page
+description. Image tags use the configured branded fallback instead of empty
+values; builds without a public hostname omit image tags. This is not an
+entity-specific image implementation. The upstream image pipeline generated a
+241,085-byte PNG, which was fetched and visually reviewed locally.
+
+Forty-three focused tests, targeted ESLint and the final production build pass.
+The build was run without a public hostname, matching the standalone Docker
+build's configuration model. Runtime checks used HTTPS `eth.tx.taxi` with port
+443 and confirmed normalized URLs without `:443`. The maintained probe
+`tools/scripts/entity-metadata-smoke.cjs` passes three real HTTP cases (block by
+height, the same block by hash, transaction), image retrieval and browser
+navigation to the next block with matching canonical/OG/Twitter titles.
+Evidence: `/tmp/tx-taxi-eth-entity-metadata.json`.
+
+The 12-check SSR/timezone/navigation regression also passes:
+`/tmp/tx-taxi-eth-ssr-metadata.json`. The build-time 404 returns `noindex` and no
+malformed image tags, but its title still lacks runtime network branding; that
+remains open. The local validation server was stopped after the checks.
+
+Private staging remains pinned to `408882a`; no deployment or public routing
+change was made for this follow-up. Entity-specific bitmap previews, remaining
+entity SSR, client-enriched metadata synchronization, remaining canonical
+routes, error-page branding and final security/cutover checks are still required.

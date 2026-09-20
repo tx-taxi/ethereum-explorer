@@ -100,7 +100,7 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
 
   return (
     <>
-      <PageMetadata pathname={ router.pathname as Route['pathname'] } query={ pageProps.query } apiData={ pageProps.apiData }/>
+      <PageMetadata pathname={ router.pathname as Route['pathname'] } query={ pageProps.metadataQuery ?? pageProps.query } apiData={ pageProps.apiData }/>
       <ChakraProvider>
         <RollbarProvider config={ rollbarConfig }>
           <AppErrorBoundary
