@@ -177,3 +177,29 @@ transaction query with no page exceptions, `toUrl` errors, CSP violations or
 document overflow. Its four missing sprite/config resources came from using
 the partial local asset pipeline; the complete private container had no missing
 resources. Repeat these checks on the final complete image before cutover.
+
+## Entity HTTP Status Checks (Source Only)
+
+Block and transaction page handlers now validate identifiers and check the
+configured public API before responding. Missing entities return HTTP 404;
+provider failures, malformed responses and timeouts return HTTP 503 with
+`Retry-After: 30`. Both failure paths emit `noindex` and `no-store`. Existing
+feature guards and the separate block-countdown route are preserved.
+
+The shared source coalesces identical requests, allows four concurrent distinct
+requests, caps each response at 2 MiB and each request at five seconds, and
+caches successes for ten seconds within 32-entry / 16-MiB limits. Redirects are
+not followed and request cookies are not forwarded. Entity identity is checked
+against the request; this is not full validation of every Blockscout field.
+
+Validated data is retained in page props, but the upstream dynamic imports and
+mount gate still prevent entity detail SSR. Query hydration, server-rendered
+details, entity metadata, live status verification and a candidate image rebuild
+remain required. These source changes are not deployed and do not close the
+production SSR gate.
+
+Validation on 2026-09-19: 17 focused Vitest tests, targeted ESLint and full
+TypeScript compilation pass. A live call through the actual source returned
+block #1 with its matching hash and height; an all-zero transaction hash
+returned 404. These are provider-boundary checks, not browser or built-image
+verification.

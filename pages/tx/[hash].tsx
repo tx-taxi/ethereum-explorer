@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
+import Error from 'next/error';
 import React from 'react';
 
 import type { Props } from 'nextjs/getServerSideProps/handlers';
@@ -10,6 +11,7 @@ const Transaction = dynamic(() => {
 }, { ssr: false });
 
 const Page: NextPage<Props> = (props: Props) => {
+  if (props.entityUnavailable) return <Error statusCode={ 503 }/>;
   return (
     <PageNextJs pathname="/tx/[hash]" query={ props.query }>
       <Transaction/>
@@ -19,4 +21,4 @@ const Page: NextPage<Props> = (props: Props) => {
 
 export default Page;
 
-export { tx as getServerSideProps } from 'nextjs/getServerSideProps/main';
+export { transactionEntity as getServerSideProps } from 'nextjs/getServerSideProps/entity';

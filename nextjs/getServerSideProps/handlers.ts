@@ -21,6 +21,8 @@ export interface Props<Pathname extends Route['pathname'] = never> {
   // so we force it to be always present in the props but it can be null
   apiData: metadata.ApiData<Pathname> | null;
   uuid: string;
+  entityData?: Record<string, unknown>;
+  entityUnavailable?: boolean;
 }
 
 export const base = async <Pathname extends Route['pathname'] = never>({ req, res, query }: GetServerSidePropsContext):
