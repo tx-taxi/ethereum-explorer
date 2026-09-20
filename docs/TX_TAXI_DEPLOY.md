@@ -232,3 +232,22 @@ This is local production-build evidence, not a deployed-image claim. Canonical
 URLs, entity social metadata, other entity routes, broader malformed-provider
 payload validation and final image/security verification remain open. No public
 domain has been changed.
+
+## Cross-Timezone Hydration Follow-up
+
+Running the first SSR candidate (`9fe6a63`) with a UTC server and a Phoenix
+browser exposed React hydration error #418 in local timestamps. Coolify job
+`vodxgc2j7dia0zu77hgkzv75` was cancelled before replacing the healthy `6425457`
+container, and the application's commit pin was restored to that revision.
+
+The fix serializes the request time for relative labels and uses UTC for initial
+absolute labels; local formatting resumes after hydration. This is scoped to
+hydrated entity pages. Three new clock tests bring the focused suite to 21
+passing tests; full TypeScript, targeted lint and the UTC production build pass.
+The smoke script now explicitly uses Phoenix (1440px) and Tokyo (390px), adds a
+recent real block, and passes all 12 checks. No-JavaScript details, next/previous
+navigation, full-hash copying, 404/noindex responses and zero captured
+hydration/page/resource errors or document overflow are verified in
+`/tmp/tx-taxi-eth-entity-ssr-time-fixed.json`. Recent-block mobile and transaction
+desktop screenshots were visually reviewed. Deployed-image verification remains
+required before assigning a public domain.

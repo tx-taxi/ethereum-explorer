@@ -3,6 +3,8 @@ import React from 'react';
 import dayjs from 'lib/date/dayjs';
 import { DAY, HOUR, MINUTE, SECOND } from 'toolkit/utils/consts';
 
+import { useSsrTime } from './useSsrTime';
+
 function getUnits(diff: number) {
   if (diff < MINUTE) {
     return [ SECOND, MINUTE ];
@@ -42,7 +44,8 @@ function getUpdateParams(ts: string | number) {
 }
 
 export default function useTimeAgoIncrement(ts: string | number | null, isEnabled?: boolean) {
-  const [ value, setValue ] = React.useState(ts ? dayjs(ts).fromNow() : null);
+  const { now } = useSsrTime();
+  const [ value, setValue ] = React.useState(ts ? dayjs(ts).from(now) : null);
 
   React.useEffect(() => {
     if (ts !== null) {

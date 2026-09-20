@@ -4,6 +4,7 @@ import React from 'react';
 
 import { useSettingsContext } from 'lib/contexts/settings';
 import dayjs from 'lib/date/dayjs';
+import { useSsrTime } from 'lib/hooks/useSsrTime';
 import { IconButton } from 'toolkit/chakra/icon-button';
 import type { SelectOption } from 'toolkit/chakra/select';
 import { SelectContent, SelectItem, SelectRoot, SelectControl } from 'toolkit/chakra/select';
@@ -33,6 +34,7 @@ interface Props extends StackProps {
 const DetailedInfoTimestamp = ({ timestamp, isLoading, noRelativeTime, ...rest }: Props) => {
 
   const settings = useSettingsContext();
+  const { isHydrating, now } = useSsrTime();
 
   const [ format, setFormat ] = React.useState<Array<Format>>(settings?.isLocalTime === false ? [ 'utc' ] : [ 'local' ]);
 
@@ -42,7 +44,8 @@ const DetailedInfoTimestamp = ({ timestamp, isLoading, noRelativeTime, ...rest }
 
   const timeText = (() => {
     if (format.includes('local')) {
-      return dayjs(timestamp).format('llll');
+      const time = dayjs(timestamp);
+      return (isHydrating ? time.utc() : time).format('llll');
     }
 
     if (format.includes('utc')) {
@@ -57,7 +60,7 @@ const DetailedInfoTimestamp = ({ timestamp, isLoading, noRelativeTime, ...rest }
       { !noRelativeTime && (
         <>
           <Skeleton loading={ isLoading } flexShrink={ 0 }>
-            { dayjs(timestamp).fromNow() }
+            { dayjs(timestamp).from(now) }
           </Skeleton>
           <TextSeparator mx={ 0 }/>
         </>

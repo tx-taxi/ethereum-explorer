@@ -30,7 +30,7 @@ function entity(kind: EntityKind): (context: GetServerSidePropsContext) => Promi
       client.setQueryData(key, result.data);
       const entityQuery = dehydrate(client);
       client.clear();
-      return { props: { ...props, entityQuery } };
+      return { props: { ...props, entityQuery, entityRenderedAt: Date.now() } };
     }
     context.res.setHeader('X-Robots-Tag', 'noindex');
     context.res.setHeader('Cache-Control', 'no-store');

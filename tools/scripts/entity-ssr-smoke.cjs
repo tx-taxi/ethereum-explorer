@@ -14,6 +14,11 @@ const cases = [
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true });
   const report = { origin, checks: [], errors: [] };
   try {
+    const blocksResponse = await fetch('https://eth.blockscout.com/api/v2/blocks', { signal: AbortSignal.timeout(10000) });
+    assert.equal(blocksResponse.status, 200);
+    const latest = (await blocksResponse.json()).items?.[0]?.height;
+    assert.ok(Number.isSafeInteger(latest));
+    cases.push({ name: 'recent-block', path: `/block/${latest}`, text: `Block #${latest}`, detail: 'Gas limit' });
     for (const item of cases) {
       const context = await browser.newContext({ javaScriptEnabled: false });
       const page = await context.newPage();
@@ -28,7 +33,8 @@ const cases = [
     }
     for (const width of [1440, 390]) {
       for (const item of cases) {
-        const page = await browser.newPage({ viewport: { width, height: 1000 }, permissions: ['clipboard-read', 'clipboard-write'] });
+        const timezoneId = width === 1440 ? 'America/Phoenix' : 'Asia/Tokyo';
+        const page = await browser.newPage({ viewport: { width, height: 1000 }, timezoneId, permissions: ['clipboard-read', 'clipboard-write'] });
         const errors = [];
         const failedResources = [];
         page.on('response', response => {
@@ -50,7 +56,7 @@ const cases = [
           const copied = await page.evaluate(() => navigator.clipboard.readText());
           entity = copied === hash && text.includes(hash.slice(0, 12));
         }
-        const result = { name: item.name, mode: 'browser', width, status: response.status(), entity, detail: text.includes(item.detail), overflow, errors, failedResources };
+        const result = { name: item.name, mode: 'browser', width, timezoneId, status: response.status(), entity, detail: text.includes(item.detail), overflow, errors, failedResources };
         report.checks.push(result);
         assert.equal(result.status, 200);
         assert.ok(result.entity && result.detail, `Missing hydrated ${item.name} details`);

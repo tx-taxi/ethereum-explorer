@@ -32,6 +32,7 @@ it('retains validated provider data in page props', async() => {
     queries: [ { queryKey: [ 'general:block', { height_or_hash: '1' } ], state: { data, status: 'success' } } ],
   } } });
   expect(JSON.parse(JSON.stringify(result))).toEqual(result);
+  expect(result).toMatchObject({ props: { entityRenderedAt: expect.any(Number) } });
 });
 
 it('preserves feature-guard results without entity fetching', async() => {

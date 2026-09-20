@@ -23,6 +23,7 @@ export interface Props<Pathname extends Route['pathname'] = never> {
   apiData: metadata.ApiData<Pathname> | null;
   uuid: string;
   entityQuery?: DehydratedState;
+  entityRenderedAt?: number;
   entityUnavailable?: boolean;
 }
 
