@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { CHAIN_INDICATOR_IDS, ChainIndicatorId, HeroBannerConfig, HeroBannerButtonState, HOME_STATS_WIDGET_IDS, HomeStatsWidgetId } from 'types/homepage';
 import { replaceQuotes } from 'configs/app/utils';
-import { getYupValidationErrorMessage, urlTest } from '../utils';
+import { getYupValidationErrorMessage, urlOrRootRelativePathTest, urlTest } from '../utils';
 import { NavigationLayout, NavigationPromoBannerConfig, NavItemExternal } from 'types/client/navigation';
 import { FeaturedNetwork, NETWORK_GROUPS, NetworkExplorer } from 'types/networks';
 import { CustomLink, CustomLinksGroup } from 'types/footerLinks';
@@ -98,7 +98,7 @@ const featuredNetworkSchema: yup.ObjectSchema<FeaturedNetwork> = yup
     title: yup.string().required(),
     url: yup.string().test(urlTest).required(),
     group: yup.string().oneOf(NETWORK_GROUPS).required(),
-    icon: yup.string().test(urlTest),
+    icon: yup.string().test(urlOrRootRelativePathTest),
     isActive: yup.boolean(),
     invertIconInDarkMode: yup.boolean(),
   });

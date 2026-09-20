@@ -141,3 +141,15 @@ The `/tokens` list is not stuck: a live browser probe received valid token rows
 after roughly 15-20 seconds. Three direct upstream samples took 32.0, 21.2, and
 20.5 seconds and each returned 50 valid tokens. Eight-second skeleton screenshots
 must not be used as proof of token rendering, or as proof of a frontend defect.
+
+## Runtime Icon Validation
+
+The org-authenticated Coolify build at `a574600` succeeded, but startup failed
+because featured-network icon validation required absolute URLs. The validator
+now permits root-relative icon assets while keeping other URL fields unchanged.
+Runtime fixtures retain absolute icons and network groups, and add the actual
+tx.taxi icon paths. Negative fixtures reject protocol-relative, ordinary relative,
+encoded traversal, encoded slash and encoded backslash paths. The full runtime
+validator suite and exact tx.taxi preset validation pass; production startup and
+browser checks must be repeated on the next image. No public domain was assigned
+to the failed candidate.

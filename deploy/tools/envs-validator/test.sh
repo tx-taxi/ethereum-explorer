@@ -51,3 +51,20 @@ for file in "${test_files[@]}"; do
         exit 1
     fi
 done
+
+echo
+echo "🧿 Rejecting unsafe featured network icon paths..."
+featured_networks_file="./public/assets/configs/featured_networks.json"
+featured_networks_backup="${featured_networks_file}.valid"
+cp "$featured_networks_file" "$featured_networks_backup"
+trap 'mv "$featured_networks_backup" "$featured_networks_file"' EXIT
+cp "${test_folder}/assets/configs/featured_networks.invalid.json" "$featured_networks_file"
+
+if dotenv -e "${test_folder}/.env.base" -e "$common_file" yarn run validate -- --silent; then
+    echo "🛑 Unsafe featured network icon paths unexpectedly passed validation."
+    exit 1
+fi
+
+mv "$featured_networks_backup" "$featured_networks_file"
+trap - EXIT
+echo "👍 Unsafe paths were rejected."

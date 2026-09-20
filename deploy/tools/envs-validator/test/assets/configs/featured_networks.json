@@ -1,6 +1,25 @@
 [
 	{
+		"title": "Bitcoin",
+		"url": "https://btc.tx.taxi",
+		"group": "Mainnets",
+		"icon": "/static/tx-taxi/chains/btc/icon.png"
+	},
+	{
+		"title": "Monero",
+		"url": "https://xmr.tx.taxi",
+		"group": "Mainnets",
+		"icon": "/static/tx-taxi/chains/xmr/icon.png"
+	},
+	{
 		"title": "Ethereum",
+		"url": "https://eth.tx.taxi",
+		"group": "Mainnets",
+		"icon": "/static/ethereum-icon.svg",
+		"isActive": true
+	},
+	{
+		"title": "Ethereum Blockscout",
 		"url": "https://eth.blockscout.com/",
 		"group": "Mainnets",
 		"icon": "https://example.com/logo.svg"

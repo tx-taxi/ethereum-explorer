@@ -1,0 +1,32 @@
+[
+	{
+		"title": "Protocol-relative icon",
+		"url": "https://example.com",
+		"group": "Mainnets",
+		"icon": "//example.com/icon.svg"
+	},
+	{
+		"title": "Non-root-relative icon",
+		"url": "https://example.com",
+		"group": "Mainnets",
+		"icon": "static/icon.svg"
+	},
+	{
+		"title": "Encoded traversal icon",
+		"url": "https://example.com",
+		"group": "Mainnets",
+		"icon": "/static/%2e%2e/secret.svg"
+	},
+	{
+		"title": "Encoded slash icon",
+		"url": "https://example.com",
+		"group": "Mainnets",
+		"icon": "/static%2fsecret.svg"
+	},
+	{
+		"title": "Encoded backslash icon",
+		"url": "https://example.com",
+		"group": "Mainnets",
+		"icon": "/static%5csecret.svg"
+	}
+]
