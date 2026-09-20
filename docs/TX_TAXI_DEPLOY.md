@@ -33,6 +33,7 @@ Set these runtime environment variables:
 
 ```dotenv
 ENVS_PRESET=tx_taxi
+HOSTNAME=0.0.0.0
 NEXT_PUBLIC_APP_PROTOCOL=https
 NEXT_PUBLIC_APP_HOST=eth.tx.taxi
 NEXT_PUBLIC_APP_ENV=production
@@ -44,6 +45,12 @@ Do not set `NEXT_PUBLIC_APP_BASE_URL`; the explorer is mounted at the domain
 root. Do not enable Coolify's static-site mode. The upstream multi-stage
 Dockerfile builds and runs the standalone Next.js server, so no Dockerfile
 variant is required.
+
+Set `HOSTNAME` explicitly: Docker otherwise supplies the container hostname,
+which Next.js uses as its bind address. The app can then respond on its bridge IP
+while localhost health probes fail with connection refused. Binding to `0.0.0.0`
+makes both checks work; it does not publish a host port or assign a public route.
+Keep the domain unassigned during private validation, then set it only at cutover.
 
 The preset uses raw GitHub URLs for the four brand assets on the pinned
 `tx-taxi` branch. They become available after the parent publishes this tree as
@@ -62,6 +69,7 @@ docker build \
 
 docker run --rm -p 3000:3000 \
   -e ENVS_PRESET=tx_taxi \
+  -e HOSTNAME=0.0.0.0 \
   -e NEXT_PUBLIC_APP_PROTOCOL=http \
   -e NEXT_PUBLIC_APP_HOST=localhost \
   -e NEXT_PUBLIC_APP_PORT=3000 \
