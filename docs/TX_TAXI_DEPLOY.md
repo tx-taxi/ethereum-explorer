@@ -124,3 +124,20 @@ The build emits one non-fatal warning for optional
 A Docker image build was not run because Docker is unavailable in the local
 validation environment. Run the image build and browser route smoke tests above
 before assigning the public production route.
+# Chain Menu Asset Follow-up
+
+The tx.taxi preset now uses local Bitcoin and official Monero symbols, plus the
+existing Ethereum symbol, for its featured networks. All three use the upstream
+menu's fixed 20px icon box. Provenance is recorded in
+`public/static/tx-taxi/chains/ASSETS.md`.
+
+TypeScript, preset parsing, asset generation, and file existence checks pass.
+The component suite compiled but its visual run was not clean: expected Chromium
+1200 was unavailable and substituting installed Chromium 1208 produced snapshot
+differences. No snapshots were replaced. The loopback staged image `e8dc748`
+still has the earlier placeholder menu until the next image is built and applied.
+
+The `/tokens` list is not stuck: a live browser probe received valid token rows
+after roughly 15-20 seconds. Three direct upstream samples took 32.0, 21.2, and
+20.5 seconds and each returned 50 valid tokens. Eight-second skeleton screenshots
+must not be used as proof of token rendering, or as proof of a frontend defect.
