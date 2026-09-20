@@ -161,3 +161,19 @@ encoded traversal, encoded slash and encoded backslash paths. The full runtime
 validator suite and exact tx.taxi preset validation pass; production startup and
 browser checks must be repeated on the next image. No public domain was assigned
 to the failed candidate.
+
+## GraphQL and Theme Script Follow-up
+
+GraphiQL now imports its documented Webpack worker bootstrap so Monaco starts
+same-origin workers instead of failing on `require.toUrl`. The CSP allows the
+exact next-themes bootstrap hashes for both system and configured default themes;
+it does not add script `unsafe-inline`. The dark tx.taxi preset emits
+`sha256-Os32ny+s3zEaX+XxoAVngBThnQv/IOycQlrqgxXOgRI=`. Its hash was absent in
+image `597f528` and present in the fixed local production response.
+
+The focused CSP test, root typecheck and Next production compilation pass. The
+rebuilt local GraphQL page launched five same-origin workers and rendered a real
+transaction query with no page exceptions, `toUrl` errors, CSP violations or
+document overflow. Its four missing sprite/config resources came from using
+the partial local asset pipeline; the complete private container had no missing
+resources. Repeat these checks on the final complete image before cutover.

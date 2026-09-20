@@ -1,6 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
+import 'graphiql/setup-workers/webpack';
 import React from 'react';
 
 import config from 'configs/app';
