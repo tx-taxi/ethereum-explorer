@@ -323,3 +323,43 @@ pass. This follow-up has not been rebuilt into an image or browser-tested in the
 candidate. Private staging remains `408882a`; public routing is unchanged.
 Entity-specific images, remaining entity SSR/canonicals, runtime error branding
 and the wider security/parity/cutover gates remain open.
+
+## Private Metadata Candidate 30378e2 (2026-09-20)
+
+Coolify job `jpltacigkek1nfbbw8oi20jy` finished building and rolling out source
+`30378e260f6c0b58b957eb6a1f9d10120c32ce93` to the private ETH application.
+Container `fr5ydadyrvhakbg79vytbrbo-065514707799` runs image
+`sha256:5a857997e192800564ed51efd2fa8c2e475e9a9172c134ad59e43a7021c4c290`,
+healthy with zero restarts. Domain and host-port mappings remain null, automatic
+deployment remains disabled, and the commit pin is unchanged by later test/docs
+commits. The previous `408882a` image
+`sha256:192e607fbf3a3933d42c792d8f4b9a97faf27c491b33ebad9789a613cff6760f`
+is retained for rollback. Local SSH preview port 14002 now targets
+`172.18.0.27:3000`; temporary test port 14004 was removed. No public routing changed.
+
+Actual-image evidence:
+
+- `/tmp/tx-taxi-eth-ssr-30378e2.json`: all 12 no-JS, desktop/mobile, timezone,
+  navigation and 404/noindex checks pass with no captured errors or overflow.
+- `/tmp/tx-taxi-eth-metadata-30378e2-hydrated.json`: three HTTP metadata cases,
+  the 241,085-byte PNG and hydrated hash-to-next-height navigation pass.
+- `/tmp/tx-taxi-eth-client-metadata-30378e2.json`: real USDC client-enriched
+  title/description/social tags, canonical and single Product schema pass at
+  1440px and 390px with no captured console/page errors or overflow. The mobile
+  screenshot was reviewed; some other token sections were still loading, so
+  this is metadata evidence, not proof of complete token-page functionality.
+- `/tmp/tx-taxi-eth-graphiql-30378e2.json`: real GraphQL response 200 and visible
+  result, four same-origin workers, no console/page/request failures or overflow.
+
+The first two metadata browser attempts timed out after clicking a server-rendered
+block-next button before hydration. A diagnostic confirmed router readiness was
+undefined at the initial click; once ready, a second click correctly navigated to
+46148. The metadata probe now waits explicitly for router readiness, rather than
+claiming to verify pre-hydration interactions. **Early block-navigation clicks
+are still lost and require a separate UX fix**, preferably native navigation that
+also works without JavaScript. Original failed reports remain at
+`/tmp/tx-taxi-eth-metadata-30378e2.json` and the `-repeat.json` variant.
+
+Entity-specific bitmap previews, remaining entity SSR/canonicals, runtime error
+branding, pre-hydration navigation, exact-image security review and the broader
+parity/source-release/public-cutover gates remain open.
