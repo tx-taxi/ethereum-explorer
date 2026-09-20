@@ -53,6 +53,38 @@ The reachable groups were remediated without removing explorer functionality:
   official archive identifies 22.23.2 as the latest Node 22 LTS release:
   <https://nodejs.org/download/release/latest-v22.x/>.
 
+## Runtime image scan and tool pruning
+
+The staged pre-pruning image
+`sha256:4f11d2c3b5e5c4f78988dedd17f0e71be867d256f2127bb89eb14cf3aefa9d61`
+was scanned separately by package class. Its Alpine 3.24.2 packages reported
+0 critical and 0 high findings. The global npm toolchain supplied by the base
+image reported 1 critical and 10 high findings, while the application artifact
+reported 0 critical and 13 high findings.
+
+The final runtime entrypoint and every script it invokes were inspected. They
+do not call `npm`, `npx`, or `corepack`, so the runner now removes those global
+packages and command launchers. It deliberately retains Yarn 1: startup calls
+`yarn install --frozen-lockfile` in `favicon_generator.sh` and
+`yarn next-sitemap` in `sitemap_generator.sh`. A Docker build assertion checks
+that Node and Yarn still run and that all three removed commands are absent.
+
+The next image scan is expected to show 0 critical/0 high OS findings and no
+global npm-toolchain findings. That result remains unverified until the parent
+builds and scans the patched image. The 13 application highs expected to remain
+are:
+
+| Package | High findings | Configured runtime disposition |
+| --- | ---: | --- |
+| `@grpc/grpc-js` | 2 | OpenTelemetry path; disabled unless `NEXT_OPEN_TELEMETRY_ENABLED=true`. |
+| `@opentelemetry/auto-instrumentations-node` | 1 | Conditional OpenTelemetry import; preset leaves it disabled. |
+| `@opentelemetry/sdk-node` | 1 | Conditional OpenTelemetry path. |
+| `@opentelemetry/propagator-jaeger` | 1 | Conditional OpenTelemetry path. |
+| `preact` | 1 | Wallet client subtree; wallet/account features are disabled. |
+| `socket.io-parser` | 2 | MetaMask wallet SDK subtree; wallet/account features are disabled. |
+| `postcss` | 2 | Nested Next runtime copy; the server does not process request-supplied CSS or source maps. |
+| `nanoid` | 3 | Findings require an invalid caller-controlled size; no such application call was found. |
+
 ## Gate decision
 
 No reviewed high advisory remains reachable in the configured explorer path.
@@ -60,10 +92,11 @@ The conditional OpenTelemetry group is acceptable only while
 `NEXT_OPEN_TELEMETRY_ENABLED` remains unset, and wallet findings are acceptable
 only while account/wallet configuration remains disabled.
 
-Remaining public-cutover gates are an actual Docker image build and image/OS
-scan, followed by browser smoke tests of NFT gateway loading, REST/GraphQL API
-docs, and core explorer routes. Docker is unavailable in this validation host,
-so those image-level checks cannot be completed here.
+Remaining public-cutover gates are an actual Docker image build, confirmation
+of the tool-pruning assertions, and a fresh image/OS scan, followed by browser
+smoke tests of NFT gateway loading, REST/GraphQL API docs, and core explorer
+routes. The scan must confirm that the global npm finding group is absent and
+that the remaining application findings match the reviewed 13-high set above.
 
 Do not treat physical presence in `.next/standalone` as proof of exploitability,
 or an absent server copy as proof that browser users are unaffected. Re-run the

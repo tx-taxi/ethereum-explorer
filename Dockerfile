@@ -204,6 +204,20 @@ COPY ./configs/envs ./configs/envs
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Runtime scripts use the separately installed Yarn 1 binary, but do not use
+# npm, npx, or Corepack. Remove their global packages and launchers.
+RUN rm -rf \
+      /usr/local/lib/node_modules/npm \
+      /usr/local/lib/node_modules/corepack \
+      /usr/local/bin/npm \
+      /usr/local/bin/npx \
+      /usr/local/bin/corepack \
+    && node --version \
+    && yarn --version \
+    && ! command -v npm \
+    && ! command -v npx \
+    && ! command -v corepack
+
 ENTRYPOINT ["./entrypoint.sh"]
 
 USER nextjs
