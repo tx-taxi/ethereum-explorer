@@ -1,6 +1,6 @@
 import type { HTMLChakraProps } from '@chakra-ui/react';
 import { GrowthBookProvider } from '@growthbook/growthbook-react';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { HydrationBoundary, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
@@ -115,7 +115,9 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
                       <RewardsProvider>
                         <MarketplaceContextProvider>
                           <SettingsContextProvider>
-                            { content }
+                            <HydrationBoundary state={ pageProps.entityQuery }>
+                              { content }
+                            </HydrationBoundary>
                           </SettingsContextProvider>
                         </MarketplaceContextProvider>
                       </RewardsProvider>

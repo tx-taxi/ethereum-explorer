@@ -203,3 +203,32 @@ TypeScript compilation pass. A live call through the actual source returned
 block #1 with its matching hash and height; an all-zero transaction hash
 returned 404. These are provider-boundary checks, not browser or built-image
 verification.
+
+## Entity Detail SSR (Local Production Verified)
+
+The follow-up hydrates Blockscout's existing query cache from an isolated
+per-request QueryClient. The block and transaction pages now render the upstream
+detail components on the server, and the read-only Wagmi provider no longer
+suppresses its child tree during SSR. Wallet-connection providers remain
+client-only. Hydrated pages use matching initial responsive state, and the
+transaction tab loading state recognizes server-fetched data.
+
+The Next.js production build, full TypeScript compilation, targeted ESLint and
+18 focused tests pass. `tools/scripts/entity-ssr-smoke.cjs` verifies real block
+46147 and transaction
+`0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060`
+with JavaScript disabled, then at 1440px and 390px with hydration enabled. Both
+views retain details without page/hydration errors, failed resources or document
+overflow. Previous/next block navigation and copying the complete transaction
+hash pass. Malformed block/transaction IDs and a missing valid-shaped transaction
+return HTTP 404 with `noindex`.
+
+Local evidence: `/tmp/tx-taxi-eth-entity-ssr.json` and its screenshots.
+The existing GraphiQL probe also passes with a real query, five same-origin
+workers, no console/page errors, no failed requests and no overflow:
+`/tmp/tx-taxi-eth-graphiql-entity-ssr.json`.
+
+This is local production-build evidence, not a deployed-image claim. Canonical
+URLs, entity social metadata, other entity routes, broader malformed-provider
+payload validation and final image/security verification remain open. No public
+domain has been changed.

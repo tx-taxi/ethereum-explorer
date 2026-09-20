@@ -1,3 +1,4 @@
+import type { DehydratedState } from '@tanstack/react-query';
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 import type { AdBannerProviders } from 'types/client/adProviders';
@@ -21,7 +22,7 @@ export interface Props<Pathname extends Route['pathname'] = never> {
   // so we force it to be always present in the props but it can be null
   apiData: metadata.ApiData<Pathname> | null;
   uuid: string;
-  entityData?: Record<string, unknown>;
+  entityQuery?: DehydratedState;
   entityUnavailable?: boolean;
 }
 

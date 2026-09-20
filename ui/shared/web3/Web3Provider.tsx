@@ -4,7 +4,7 @@ import config from 'configs/app';
 
 const ReownProvider = dynamic(() => import('./providers/ReownProvider'), { ssr: false });
 const DynamicProvider = dynamic(() => import('./providers/DynamicProvider'), { ssr: false });
-const WagmiProvider = dynamic(() => import('./providers/WagmiProvider'), { ssr: false });
+const WagmiProvider = dynamic(() => import('./providers/WagmiProvider'));
 
 const feature = config.features.blockchainInteraction;
 

@@ -26,7 +26,12 @@ it('retains validated provider data in page props', async() => {
   const data = { hash: HASH, height: 1 };
   vi.stubGlobal('fetch', vi.fn(async() => new Response(JSON.stringify(data))));
   const { blockEntity } = await import('./entity');
-  expect(await blockEntity(context({ height_or_hash: '1' }))).toEqual({ props: { ...props, entityData: data } });
+  const result = await blockEntity(context({ height_or_hash: '1' }));
+  expect(result).toMatchObject({ props: { ...props, entityQuery: {
+    mutations: [],
+    queries: [ { queryKey: [ 'general:block', { height_or_hash: '1' } ], state: { data, status: 'success' } } ],
+  } } });
+  expect(JSON.parse(JSON.stringify(result))).toEqual(result);
 });
 
 it('preserves feature-guard results without entity fetching', async() => {
@@ -35,6 +40,22 @@ it('preserves feature-guard results without entity fetching', async() => {
   const { transactionEntity } = await import('./entity');
   expect(await transactionEntity(context({ hash: HASH }))).toEqual({ notFound: true });
   expect(fetcher).not.toHaveBeenCalled();
+});
+
+it('isolates request query state and uses the transaction resource key', async() => {
+  const hashes = [ HASH, '0x' + 'b'.repeat(64) ];
+  vi.stubGlobal('fetch', vi.fn<typeof fetch>(async(url) => new Response(JSON.stringify({ hash: String(url).split('/').pop() }))));
+  const { transactionEntity } = await import('./entity');
+  const results = await Promise.all(hashes.map(hash => transactionEntity(context({ hash }))));
+  for (const [ index, result ] of results.entries()) {
+    if (!('props' in result)) throw new Error('Expected successful page props');
+    const pageProps = await result.props;
+    expect(pageProps.entityQuery?.queries).toHaveLength(1);
+    expect(pageProps.entityQuery?.queries[0]).toMatchObject({
+      queryKey: [ 'general:tx', { hash: hashes[index] } ],
+      state: { data: { hash: hashes[index] }, status: 'success' },
+    });
+  }
 });
 
 it.each([ 'missing', 'invalid' ])('returns a noindex 404 for %s entities', async(kind) => {

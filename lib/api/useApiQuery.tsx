@@ -6,8 +6,12 @@ import type { ExternalChainExtended } from 'types/externalChains';
 import { useMultichainContext } from 'lib/contexts/multichain';
 import type { Params as FetchParams } from 'lib/hooks/useFetch';
 
+import { getResourceKey } from './getResourceKey';
 import type { ResourceError, ResourceName, ResourcePathParams, ResourcePayload } from './resources';
 import useApiFetch from './useApiFetch';
+
+export { getResourceKey } from './getResourceKey';
+export type { GetResourceKeyParams } from './getResourceKey';
 
 export interface Params<R extends ResourceName, E = unknown, D = ResourcePayload<R>> {
   pathParams?: ResourcePathParams<R>;
@@ -16,19 +20,6 @@ export interface Params<R extends ResourceName, E = unknown, D = ResourcePayload
   queryOptions?: Partial<Omit<UseQueryOptions<ResourcePayload<R>, ResourceError<E>, D>, 'queryFn'>>;
   logError?: boolean;
   chain?: ExternalChainExtended;
-}
-
-export interface GetResourceKeyParams<R extends ResourceName, E = unknown, D = ResourcePayload<R>>
-  extends Pick<Params<R, E, D>, 'pathParams' | 'queryParams'> {
-  chainId?: string;
-}
-
-export function getResourceKey<R extends ResourceName>(resource: R, { pathParams, queryParams, chainId }: GetResourceKeyParams<R> = {}) {
-  if (pathParams || queryParams) {
-    return [ resource, chainId, { ...pathParams, ...queryParams } ].filter(Boolean);
-  }
-
-  return [ resource, chainId ].filter(Boolean);
 }
 
 export default function useApiQuery<R extends ResourceName, E = unknown, D = ResourcePayload<R>>(

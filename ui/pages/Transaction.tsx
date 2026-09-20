@@ -117,7 +117,7 @@ const TransactionPageContent = () => {
 
   const tags = (
     <EntityTags
-      isLoading={ !txQuery.isFetchedAfterMount || (tacFeature.isEnabled && tacOperationQuery.isPlaceholderData) }
+      isLoading={ txQuery.isPlaceholderData || (tacFeature.isEnabled && tacOperationQuery.isPlaceholderData) }
       tags={ txTags }
     />
   );
@@ -138,7 +138,7 @@ const TransactionPageContent = () => {
         contentAfter={ tags }
         secondRow={ titleSecondRow }
       />
-      <RoutedTabs tabs={ tabs } isLoading={ !txQuery.isFetchedAfterMount }/>
+      <RoutedTabs tabs={ tabs } isLoading={ txQuery.isPlaceholderData }/>
     </AddressHighlightProvider>
   );
 };

@@ -14,6 +14,7 @@ interface Props<Pathname extends Route['pathname']> {
   children: React.ReactNode;
   query?: PageProps<Pathname>['query'];
   apiData?: PageProps<Pathname>['apiData'];
+  serverRendered?: boolean;
 }
 
 const PageNextJs = <Pathname extends Route['pathname']>(props: Props<Pathname>) => {
@@ -26,7 +27,7 @@ const PageNextJs = <Pathname extends Route['pathname']>(props: Props<Pathname>) 
   const isMixPanelInitialized = mixpanel.useInit();
   mixpanel.useLogPageView(isMixPanelInitialized);
 
-  return isMounted ? props.children : null;
+  return props.serverRendered || isMounted ? props.children : null;
 };
 
 export default React.memo(PageNextJs);

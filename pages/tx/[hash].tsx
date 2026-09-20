@@ -8,12 +8,12 @@ import PageNextJs from 'nextjs/PageNextJs';
 
 const Transaction = dynamic(() => {
   return import('ui/pages/Transaction');
-}, { ssr: false });
+});
 
 const Page: NextPage<Props> = (props: Props) => {
   if (props.entityUnavailable) return <Error statusCode={ 503 }/>;
   return (
-    <PageNextJs pathname="/tx/[hash]" query={ props.query }>
+    <PageNextJs pathname="/tx/[hash]" query={ props.query } serverRendered>
       <Transaction/>
     </PageNextJs>
   );

@@ -1,6 +1,8 @@
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 import config from 'configs/app';
+import { getResourceKey } from 'lib/api/getResourceKey';
 
 import { EntitySource } from './entitySource';
 import type { EntityKind } from './entitySource';
@@ -19,7 +21,17 @@ function entity(kind: EntityKind): (context: GetServerSidePropsContext) => Promi
     const props = await baseline.props;
     const id = context.params?.[kind === 'block' ? 'height_or_hash' : 'hash'];
     const result = await source.get(kind, id);
-    if (result.status === 200) return { props: { ...props, entityData: result.data } };
+    if (result.status === 200) {
+      // Never share a query client across requests; only the bounded public API cache is shared.
+      const client = new QueryClient();
+      const key = kind === 'block' ?
+        getResourceKey('general:block', { pathParams: { height_or_hash: String(id) } }) :
+        getResourceKey('general:tx', { pathParams: { hash: String(id) } });
+      client.setQueryData(key, result.data);
+      const entityQuery = dehydrate(client);
+      client.clear();
+      return { props: { ...props, entityQuery } };
+    }
     context.res.setHeader('X-Robots-Tag', 'noindex');
     context.res.setHeader('Cache-Control', 'no-store');
     if (result.status === 404) return { notFound: true };
